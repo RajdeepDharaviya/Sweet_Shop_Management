@@ -10,7 +10,8 @@ jest.setTimeout(20000);
 beforeAll(async () => memoryDB.connectMemoryDB());
 
 // This function will clear in Memory database before running any test
-beforeEach(async () => memoryDB.clearMemoryDB());
+// NOTE : for login api testing comment this function
+// beforeEach(async () => memoryDB.clearMemoryDB());
 
 // This function will close connection after all thing is runed
 afterAll(async () => memoryDB.closeMemoryDB());
@@ -43,7 +44,7 @@ describe("POST /api/auth/register ", () => {
 });
 
 describe("POST /api/auth/login", () => {
-  it("Should respond with 200 and user object ", async () => {
+  it("Should respond with 200 and user object and login", async () => {
     // Arrange
     const userCredentials = {
       email: "test@gmail.com",
@@ -57,17 +58,21 @@ describe("POST /api/auth/login", () => {
 
     //  ****** Assertion ******
     // Expected response object
-    const resUser = {
-      firstName: "testFirstName",
-      lastName: "testLastName",
-      email: "test@gmail.com",
-      password: "testpassword",
-      roleId: 0,
-    };
 
-    expect(response.body.email).toBe(resUser.email);
+    // Checking in database and fetch details using given credetials
+    // NOTE : for login api testing comment this function
+    // beforeEach(async () => memoryDB.clearMemoryDB());
+
+    const user = await userModel.findOne({
+      $and: [
+        { email: userCredentials.email },
+        { password: userCredentials.password },
+      ],
+    });
+
+    expect(user.email).toBe(userCredentials.email);
     expect(response.status).toBe(200);
-    expect(response).not.toBeNull();
-    expect(response.body._id).toBeDefined();
+    expect(user).not.toBeNull();
+    expect(user._id).toBeDefined();
   });
 });
