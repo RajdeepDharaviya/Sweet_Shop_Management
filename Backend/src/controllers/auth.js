@@ -1,16 +1,11 @@
-const registerUser = async (req, res) => {
-  const { firstName, lastName, email, password, roleId } = req.body;
+const { userModel } = require("../models/user");
 
-  const newUser = {
-    _id: Date.now(),
-    firstName,
-    lastName,
-    email,
-    password,
-    roleId,
-  };
+const registerUserController = async (req, res) => {
+  const { _id, firstName, lastName, email, password, roleId } = req.body;
+
+  const newUser = await userModel.create(req.body);
 
   res.status(201).json(newUser);
 };
 
-module.exports = { registerUser };
+module.exports = { registerUserController };
