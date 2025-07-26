@@ -118,3 +118,37 @@ describe("POST /api/auth/login", () => {
     expect(response.body.message).toBe("Invalid email or password");
   });
 });
+
+describe("POST /api/sweet", () => {
+  it("should respond with 201 and create new sweet", async () => {
+    // Arrange
+    const newSweet = {
+      name: "testSweet",
+      price: 100,
+      description: "testDescription",
+    };
+
+    // Act
+    const response = await request(app).post("/api/sweet").send(newSweet);
+
+    // Assertion
+    expect(response.status).toBe(201);
+    expect(response.body.name).toBe(newSweet.name);
+    expect(response.body.price).toBe(newSweet.price);
+  });
+
+  it("should respond with 400 for missing fields", async () => {
+    // Arrange
+    const newSweet = {
+      name: "testSweet",
+      price: 100,
+    };
+
+    // Act
+    const response = await request(app).post("/api/sweet").send(newSweet);
+
+    // Assertion
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("All fields are required");
+  });
+});
