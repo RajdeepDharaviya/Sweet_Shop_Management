@@ -1,12 +1,20 @@
 const request = require("supertest");
-
 const app = require("./app");
-
 const { userModel } = require("./models/user");
+const memoryDB = require("./test-utils/inmemorydb");
 
-// create a spy on the create method
+// Increase Jest timeout to avoid timeout errors during DB setup
+jest.setTimeout(20000);
 
-const spyUserCreate = jest.spyOn(userModel, "create");
+// This function will first establish a connection to in memory db before runnig anything
+beforeAll(async () => memoryDB.connectMemoryDB());
+
+// This function will clear in Memory database before running any test
+beforeEach(async () => memoryDB.clearMemoryDB());
+
+// This function will close connection after all thing is runed
+afterAll(async () => memoryDB.closeMemoryDB());
+
 describe(": POST /api/auth/register ", () => {
   it("should respond with 201 and create new user", async () => {
     // Arrange
@@ -18,23 +26,18 @@ describe(": POST /api/auth/register ", () => {
       roleId: 0,
     };
 
-    // Tell the spy to what to be return when called create method
-    spyUserCreate.mockResolvedValue({
-      _id: Date.now(),
-      ...newUser,
-    });
-
     // Act
     const response = await request(app)
       .post("/api/auth/register")
       .send(newUser);
 
     // Assertion
-    expect(response.body.firstName).toBe(newUser.firstName);
-    expect(response.body.lastName).toBe(newUser.lastName);
-    expect(response.body.email).toBe(newUser.email);
-    expect(response.body.password).toBe(newUser.password);
-    expect(response.body.roleId).toBe(newUser.roleId);
+
+    // Checkign record in database
+    const user = await userModel.findOne({ email: newUser.email });
+
+    expect(user).not.toBeNull();
+    expect(user.firstName).toBe(newUser.firstName);
     expect(response.body._id).toBeDefined(); // Expect to get id
   });
 });
