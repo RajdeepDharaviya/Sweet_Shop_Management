@@ -41,6 +41,24 @@ describe("POST /api/auth/register ", () => {
     expect(user.firstName).toBe(newUser.firstName);
     expect(response.body._id).toBeDefined(); // Expect to get id
   });
+
+  it("should respond with 400 for missing fields", async () => {
+    // Arrange
+    const newUser = {
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+    };
+
+    // Act
+    const response = await request(app)
+      .post("/api/auth/register")
+      .send(newUser);
+
+    // Assertion
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("All fields are required");
+  });
 });
 
 describe("POST /api/auth/login", () => {
@@ -64,5 +82,39 @@ describe("POST /api/auth/login", () => {
     expect(response.status).toBe(200);
     expect(response.body.user).not.toBeNull();
     expect(response.body.user._id).toBeDefined();
+  });
+
+  it("Should respond with 401 for invalid credentials", async () => {
+    // Arrange
+    const userCredentials = {
+      email: "test2@gmail.com",
+      password: "wrongpassword",
+    };
+
+    // Act
+    const response = await request(app)
+      .post("/api/auth/login")
+      .send(userCredentials);
+
+    // Assertion
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe("Invalid email or password");
+  });
+
+  it("Should respond with 401 for non-existing user", async () => {
+    // Arrange
+    const userCredentials = {
+      email: "test2@gmail.com",
+      password: "testpassword",
+    };
+
+    // Act
+    const response = await request(app)
+      .post("/api/auth/login")
+      .send(userCredentials);
+
+    // Assertion
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe("Invalid email or password");
   });
 });
