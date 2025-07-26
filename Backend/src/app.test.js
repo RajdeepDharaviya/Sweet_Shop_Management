@@ -15,7 +15,7 @@ beforeEach(async () => memoryDB.clearMemoryDB());
 // This function will close connection after all thing is runed
 afterAll(async () => memoryDB.closeMemoryDB());
 
-describe(": POST /api/auth/register ", () => {
+describe("POST /api/auth/register ", () => {
   it("should respond with 201 and create new user", async () => {
     // Arrange
     const newUser = {
@@ -39,5 +39,35 @@ describe(": POST /api/auth/register ", () => {
     expect(user).not.toBeNull();
     expect(user.firstName).toBe(newUser.firstName);
     expect(response.body._id).toBeDefined(); // Expect to get id
+  });
+});
+
+describe("POST /api/auth/login", () => {
+  it("Should respond with 200 and user object ", async () => {
+    // Arrange
+    const userCredentials = {
+      email: "test@gmail.com",
+      password: "testpassword",
+    };
+
+    // Act
+    const response = await request(app)
+      .post("/api/auth/login")
+      .send(userCredentials);
+
+    //  ****** Assertion ******
+    // Expected response object
+    const resUser = {
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      roleId: 0,
+    };
+
+    expect(response.body.email).toBe(resUser.email);
+    expect(response.status).toBe(200);
+    expect(response).not.toBeNull();
+    expect(response.body._id).toBeDefined();
   });
 });
