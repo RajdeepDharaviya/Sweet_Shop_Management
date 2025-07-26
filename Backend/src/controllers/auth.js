@@ -1,3 +1,4 @@
+const { signJwtToken } = require("../middlewares/auth");
 const { userModel } = require("../models/user");
 
 const registerUserController = async (req, res) => {
@@ -27,17 +28,23 @@ const loginUserController = async (req, res) => {
     });
   }
 
-  const user = await userModel.findOne({
-    $and: [{ email: email }, { password: password }],
-  });
+  const user = await userModel
+    .findOne({
+      $and: [{ email: email }, { password: password }],
+    })
+    .populate("firstName lastName email roleId _id");
 
   if (!user) {
     return res.status(400).json({
       message: "Wrong password , Please try again!",
     });
   }
+
+  const jwtToken = signJwtToken(user);
+
   res.status(200).json({
     user,
+    jwtToken,
   });
 };
 

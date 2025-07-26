@@ -5,30 +5,42 @@ let inMemoryMongoDB;
 
 // Connect to the in memory database
 const connectMemoryDB = async () => {
-  inMemoryMongoDB = await MongoMemoryServer.create();
+  try {
+    inMemoryMongoDB = await MongoMemoryServer.create();
 
-  const uri = inMemoryMongoDB.getUri();
+    const uri = inMemoryMongoDB.getUri();
 
-  await mongoose.connect(uri);
+    await mongoose.connect(uri);
+  } catch (err) {
+    console.log("Error : ", err.message);
+  }
 };
 
 // Disconnect and close the connection
 const closeMemoryDB = async () => {
-  await mongoose.connection.dropDatabase();
+  try {
+    await mongoose.connection.dropDatabase();
 
-  await mongoose.connection.close();
+    await mongoose.connection.close();
 
-  await inMemoryMongoDB.stop();
+    await inMemoryMongoDB.stop();
+  } catch (err) {
+    console.log("Error : ", err.message);
+  }
 };
 
 // clear all data from the database
 const clearMemoryDB = async () => {
-  const collections = mongoose.connection.collections;
+  try {
+    const collections = mongoose.connection.collections;
 
-  for (const key in collections) {
-    const collection = collections[key];
+    for (const key in collections) {
+      const collection = collections[key];
 
-    await collection.deleteMany({});
+      await collection.deleteMany({});
+    }
+  } catch (err) {
+    console.log("Error : ", err.message);
   }
 };
 

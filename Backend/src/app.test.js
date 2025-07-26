@@ -45,6 +45,8 @@ describe("POST /api/auth/register ", () => {
 
 describe("POST /api/auth/login", () => {
   it("Should respond with 200 and user object and login", async () => {
+    // NOTE : for login api testing comment this function
+    // beforeEach(async () => memoryDB.clearMemoryDB());
     // Arrange
     const userCredentials = {
       email: "test@gmail.com",
@@ -57,22 +59,10 @@ describe("POST /api/auth/login", () => {
       .send(userCredentials);
 
     //  ****** Assertion ******
-    // Expected response object
 
-    // Checking in database and fetch details using given credetials
-    // NOTE : for login api testing comment this function
-    // beforeEach(async () => memoryDB.clearMemoryDB());
-
-    const user = await userModel.findOne({
-      $and: [
-        { email: userCredentials.email },
-        { password: userCredentials.password },
-      ],
-    });
-
-    expect(user.email).toBe(userCredentials.email);
+    expect(response.body.user.email).toBe(userCredentials.email);
     expect(response.status).toBe(200);
-    expect(user).not.toBeNull();
-    expect(user._id).toBeDefined();
+    expect(response.body.user).not.toBeNull();
+    expect(response.body.user._id).toBeDefined();
   });
 });
