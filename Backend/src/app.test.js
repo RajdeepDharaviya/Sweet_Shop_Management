@@ -11,7 +11,7 @@ beforeAll(async () => memoryDB.connectMemoryDB());
 
 // This function will clear in Memory database before running any test
 // NOTE : for login api testing comment this function
-// beforeEach(async () => memoryDB.clearMemoryDB());
+beforeEach(async () => memoryDB.clearMemoryDB());
 
 // This function will close connection after all thing is runed
 afterAll(async () => memoryDB.closeMemoryDB());
@@ -72,6 +72,15 @@ describe("POST /api/auth/login", () => {
     };
 
     // Act
+    // adding a user to the database to avoid authentication issues
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      roleId: 1, // Assuming 1 is a valid roleId for a admin
+    });
+    await user.save();
     const response = await request(app)
       .post("/api/auth/login")
       .send(userCredentials);
@@ -130,10 +139,25 @@ describe("POST /api/sweet", () => {
       stock: 50,
     };
 
+    // adding a user to the database to avoid authentication issues
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      roleId: 1, // Assuming 1 is a valid roleId for a admin
+    });
+    await user.save();
+
     // Act
+
+    //getting the user roleId
+    const userRoleId = user.roleId;
+
     const response = await request(app).post("/api/sweet").send(newSweet);
 
     // Assertion
+    expect(userRoleId).toBe(1); // Assuming 1 is the roleId for admin
     expect(response.status).toBe(201);
     expect(response.body.name).toBe(newSweet.name);
     expect(response.body.price).toBe(newSweet.price);
