@@ -433,11 +433,14 @@ describe("POST /api/sweets/:id/purchase", () => {
       .post(`/api/sweets/${sweet._id}/purchase`)
       .send({
         quantity: 2,
+        totalPrice: sweet.price * 2,
       });
 
     // Assertion
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe("Sweet purchased successfully");
+    expect(response.body.message).toBe(
+      `Sweet with ID ${sweet._id} purchased successfully.`
+    );
     expect(role).toBe("user"); // Assuming is the role for user
     expect(response.body.sweet.name).toBe(sweet.name);
     expect(response.body.sweet.stock).toBe(sweet.stock - 2);
