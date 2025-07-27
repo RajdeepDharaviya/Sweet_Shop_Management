@@ -3,6 +3,7 @@ const app = require("./app");
 const { userModel } = require("./models/user");
 const memoryDB = require("./test-utils/inmemorydb");
 const { userRoleModel } = require("./models/userRole");
+const { sweetModel } = require("./models/sweet");
 
 // Increase Jest timeout to avoid timeout errors during DB setup
 jest.setTimeout(20000);
@@ -17,21 +18,14 @@ const createUserRoles = async () => {
 };
 
 // This function will first establish a connection to in memory db before runnig anything
-beforeAll(async () =>
-  memoryDB
-    .connectMemoryDB()
-    .then(() => createUserRoles())
-    .catch((err) => {
-      console.error("Error connecting to in-memory database:", err.message);
-    })
-);
+beforeAll(async () => memoryDB.connectMemoryDB());
 
 // beforeAll(
 // });
 
 // This function will clear in Memory database before running any test
 // NOTE : for login api testing comment this function
-beforeEach(async () => memoryDB.clearMemoryDB());
+beforeEach(async () => memoryDB.clearMemoryDB().then(createUserRoles));
 
 // This function will close connection after all thing is runed
 afterAll(async () => memoryDB.closeMemoryDB());
@@ -204,5 +198,46 @@ describe("POST /api/sweet", () => {
     // Assertion
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("All fields are required");
+  });
+});
+
+describe("GET /api/sweets", () => {
+  it("should respond with 200 and return all sweets", async () => {
+    // Arrange
+    const sweets = [
+      {
+        name: "testSweet1",
+        price: 100,
+        description: "testDescription1",
+        image: "testImage1.jpg",
+        stock: 50,
+      },
+      {
+        name: "testSweet2",
+        price: 200,
+        description: "testDescription2",
+        image: "testImage2.jpg",
+        stock: 250,
+      },
+    ];
+
+    // Adding sweets to the database
+    await sweetModel.insertMany(sweets);
+
+    // Act
+    const response = await request(app).get("/api/sweets");
+
+    // Assertion
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+  });
+
+  it("should respond with 404 if no sweets found", async () => {
+    // Act
+    const response = await request(app).get("/api/sweets");
+
+    // Assertion
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("No sweets found");
   });
 });
