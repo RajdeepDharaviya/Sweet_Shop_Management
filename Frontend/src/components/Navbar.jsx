@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Navbar() {
   return (
     <nav className=" text-black shadow-lg">
@@ -5,7 +7,9 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="flex-shrink-0 text-xl font-bold">Sweet Shop</div>
+            <div className="flex-shrink-0 text-xl font-bold">
+              <Link to={"/"}>Sweet Shop</Link>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
@@ -13,13 +17,20 @@ export default function Navbar() {
             <div className="ml-10 flex items-baseline space-x-8">
               <a
                 href="#"
-                className="text-black hover:text-blue-300 px-3 py-2 text-lg font-medium transition-colors duration-200"
+                className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200"
               >
                 Filter
               </a>
+              <Link
+                to={"/login"}
+                href="#"
+                className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200"
+              >
+                Login
+              </Link>
               <a
                 href="#"
-                className="text-black text-lg hover:text-white px-3 py-2  font-medium transition-colors duration-200"
+                className="text-black text-lg hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2  font-medium duration-200"
               >
                 About us
               </a>
@@ -112,6 +123,13 @@ export default function Navbar() {
                 >
                   Filter
                 </a>
+                <Link
+                  to={"/login"}
+                  href="#"
+                  className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200"
+                >
+                  Login
+                </Link>
                 <a
                   href="#"
                   className="block px-3 py-2 font-medium text-black hover:text-white hover:bg-slate-700 rounded-lg transition-colors duration-200"
