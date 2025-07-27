@@ -329,6 +329,10 @@ describe("PUT /api/sweets/:id", () => {
     const role = user.role;
 
     // Act
+
+    //getting sweet by id
+    const isSweetExist = await sweetModel.findOne({ name: sweet.name });
+
     const response = await request(app)
       .put(`/api/sweets/${sweet._id}`)
       .send(updatedSweet);

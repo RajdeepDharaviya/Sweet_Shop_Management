@@ -43,7 +43,6 @@ const getAllSweetsController = async (req, res) => {
 const getSweetBySearchController = async (req, res) => {
   try {
     const { term } = req.query;
-    console.log("Search term:", term);
 
     if (!term) {
       return res.status(400).json({ message: "Search query is required" });
@@ -67,17 +66,42 @@ const getSweetBySearchController = async (req, res) => {
 
     // If term is a number, search by price
     const price = parseFloat(term);
-    console.log("Searching sweets with price less than or equal to:", price);
 
     const sweets = await sweetModel.find({ price: { $lte: price } });
-    console.log("Sweets found:", sweets);
 
     if (!sweets || sweets.length === 0) {
       return res.status(404).json({ message: "No sweets found" });
     }
     res.status(200).json(sweets);
   } catch (error) {
-    console.error("Error searching sweets:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const updateSweetController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price, description, image, stock, category } = req.body;
+
+    if (!id) {
+      return res.status(404).json({ message: "Sweet not found" });
+    }
+    if (!name || !price || !description || !image || !stock || !category) {
+      return res.status(404).json({ message: "Sweet not found" });
+    }
+    const updatedSweet = await sweetModel.findByIdAndUpdate(
+      id,
+      { name, price, description, image, stock, category },
+      { new: true }
+    );
+
+    if (!updatedSweet) {
+      return res.status(404).json({ message: "Sweet not found" });
+    }
+
+    res.status(200).json(updatedSweet);
+  } catch (error) {
+    console.error("Error updating sweet:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -86,4 +110,5 @@ module.exports = {
   addSweetController,
   getAllSweetsController,
   getSweetBySearchController,
+  updateSweetController,
 };
