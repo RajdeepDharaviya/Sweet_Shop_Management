@@ -52,6 +52,7 @@ const DashBoard = () => {
         return (
           <SweetCard
             key={sweet._id}
+            id={sweet._id}
             name={sweet.name}
             description={sweet.description}
             image={sweet.image}
