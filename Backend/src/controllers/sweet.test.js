@@ -15,6 +15,7 @@ describe("Sweet Model Tests", () => {
       price: 150,
       description: "Delicious bangali sweet",
       image: "rasgulla.jpg",
+      category: "Bengali Sweets",
       stock: 500,
     };
 

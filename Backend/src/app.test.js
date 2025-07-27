@@ -153,6 +153,7 @@ describe("POST /api/sweet", () => {
       price: 100,
       description: "testDescription",
       image: "testImage.jpg",
+      category: "testCategory",
       stock: 50,
     };
 
@@ -162,6 +163,7 @@ describe("POST /api/sweet", () => {
       lastName: "testLastName",
       email: "test@gmail.com",
       password: "testpassword",
+      category: "testCategory",
       role: "admin", // Assuming 1 is a valid role for a admin
     });
     await user.save();
@@ -210,6 +212,7 @@ describe("GET /api/sweets", () => {
         price: 100,
         description: "testDescription1",
         image: "testImage1.jpg",
+        category: "testCategory",
         stock: 50,
       },
       {
@@ -217,6 +220,7 @@ describe("GET /api/sweets", () => {
         price: 200,
         description: "testDescription2",
         image: "testImage2.jpg",
+        category: "testCategory",
         stock: 250,
       },
     ];
@@ -235,6 +239,54 @@ describe("GET /api/sweets", () => {
   it("should respond with 404 if no sweets found", async () => {
     // Act
     const response = await request(app).get("/api/sweets");
+
+    // Assertion
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("No sweets found");
+  });
+});
+
+describe("GET /api/sweets/search", () => {
+  it("should respond with 200 and return sweets matching the search term", async () => {
+    // Arrange
+    const sweets = [
+      {
+        name: "testSweet1",
+        price: 100,
+        description: "testDescription1",
+        image: "testImage1.jpg",
+        category: "testCategory",
+        stock: 50,
+      },
+      {
+        name: "testSweet2",
+        price: 200,
+        description: "testDescription2",
+        image: "testImage2.jpg",
+        category: "testCategory",
+        stock: 250,
+      },
+    ];
+
+    // Adding sweets to the database
+    await sweetModel.insertMany(sweets);
+
+    // Act
+    const response = await request(app)
+      .get("/api/sweets/search")
+      .query({ term: "testSweet1" });
+
+    // Assertion
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+    expect(response.body[0].name).toBe("testSweet1");
+  });
+
+  it("should respond with 404 if no sweets match the search term", async () => {
+    // Act
+    const response = await request(app)
+      .get("/api/sweets/search")
+      .query({ term: "nonExistentSweet" });
 
     // Assertion
     expect(response.status).toBe(404);
