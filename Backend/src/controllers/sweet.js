@@ -13,7 +13,7 @@ const addSweetController = async (req, res) => {
     stock,
   });
   // Logic to add sweet to the database
-  res.status(201).json({ name, price, description, image, stock });
+  res.status(201).json(sweetData);
 };
 
 module.exports = {

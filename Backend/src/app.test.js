@@ -137,6 +137,7 @@ describe("POST /api/sweet", () => {
     expect(response.status).toBe(201);
     expect(response.body.name).toBe(newSweet.name);
     expect(response.body.price).toBe(newSweet.price);
+    expect(response.body._id).toBeDefined();
   });
 
   it("should respond with 400 for missing fields", async () => {
