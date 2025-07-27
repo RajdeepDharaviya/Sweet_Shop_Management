@@ -402,3 +402,55 @@ describe("DELETE /api/sweets/:id", () => {
     expect(response.body.message).toBe("Invalid Sweet ID");
   });
 });
+
+describe("POST /api/sweets/:id/purchase", () => {
+  it("should respond with 200 and purchase the sweet", async () => {
+    // Arrange
+    const sweet = new sweetModel({
+      name: "testSweet",
+      price: 100,
+      description: "testDescription",
+      image: "testImage.jpg",
+      category: "testCategory",
+      stock: 50,
+    });
+    await sweet.save();
+
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      category: "testCategory",
+      role: "user", // Assuming 2 is a valid role for a user
+    });
+
+    await user.save();
+    const role = user.role;
+
+    // Act
+    const response = await request(app)
+      .post(`/api/sweets/${sweet._id}/purchase`)
+      .send({
+        quantity: 2,
+      });
+
+    // Assertion
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Sweet purchased successfully");
+    expect(role).toBe("user"); // Assuming is the role for user
+    expect(response.body.sweet.name).toBe(sweet.name);
+    expect(response.body.sweet.stock).toBe(sweet.stock - 2);
+  });
+
+  it("should respond with 404 if sweet not purchase", async () => {
+    // Act
+    const response = await request(app)
+      .post("/api/sweets/invalidId/purchase")
+      .send({ quantity: 1 });
+
+    // Assertion
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Sweet not found");
+  });
+});
