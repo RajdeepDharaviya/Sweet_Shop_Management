@@ -34,7 +34,7 @@ const DashBoard = () => {
     fetchSweets();
   }, []);
 
-  if (!sweetsSelector || sweetsSelector.length === 0) {
+  if (!sweetsSelector) {
     return (
       <div className="flex my-4 flex-row items-center justify-center flex-wrap gap-4">
         <ShimmerCard />
@@ -42,6 +42,16 @@ const DashBoard = () => {
         <ShimmerCard />
         <ShimmerCard />
         <ShimmerCard />
+      </div>
+    );
+  }
+
+  console.log(sweetsSelector);
+
+  if (sweetsSelector.length === 0) {
+    return (
+      <div className="flex my-4 flex-row items-center justify-center flex-wrap gap-4">
+        <h1 className="text-red-500">No sweets found</h1>
       </div>
     );
   }

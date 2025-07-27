@@ -9,7 +9,7 @@ const sweetSlice = createSlice({
     },
     // eslint-disable-next-line no-unused-vars
     removeSweet: (state) => {
-      return null;
+      return [];
     },
   },
 });

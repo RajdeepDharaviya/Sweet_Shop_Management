@@ -1,6 +1,63 @@
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../constant";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addSweet, removeSweet } from "../utils/sweetSlice";
 
 export default function Navbar() {
+  const user = useSelector((store) => store.user);
+  const [search, setSearch] = useState("");
+
+  const dispatch = useDispatch();
+
+  const handleSearch = async (e) => {
+    // e.preventDefault();
+    setSearch(e.target.value);
+    if (e.target.value === "") {
+      axios
+        .get(BASE_URL + `api/sweets`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          dispatch(removeSweet());
+          dispatch(addSweet(res.data));
+        });
+
+      return;
+    }
+  };
+
+  useEffect(() => {
+    console.log("called");
+    if (search === "") {
+      return;
+    }
+    let time = setTimeout(() => {
+      axios
+        .get(BASE_URL + `api/sweets/search?term=` + search, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          dispatch(removeSweet());
+          if (res?.status === 201) {
+            dispatch(addSweet([]));
+            return;
+          }
+          dispatch(addSweet(res.data));
+        });
+    }, 300);
+
+    return () => {
+      clearTimeout(time);
+    };
+  }, [search]);
+
   return (
     <nav className=" text-black shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,13 +78,15 @@ export default function Navbar() {
               >
                 Filter
               </a>
-              <Link
-                to={"/login"}
-                href="#"
-                className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200"
-              >
-                Login
-              </Link>
+              {!user && (
+                <Link
+                  to={"/login"}
+                  href="#"
+                  className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200"
+                >
+                  Login
+                </Link>
+              )}
               <a
                 href="#"
                 className="text-black text-lg hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2  font-medium duration-200"
@@ -57,6 +116,10 @@ export default function Navbar() {
                 </svg>
               </div>
               <input
+                onChange={(e) => {
+                  handleSearch(e);
+                }}
+                value={search}
                 type="text"
                 placeholder="Search"
                 className="bg-white text-black border border-black placeholder-gray-400 pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-100 transition-colors duration-200 w-64"
@@ -161,6 +224,12 @@ export default function Navbar() {
                     type="text"
                     placeholder="Search"
                     className="w-full bg-white text-black border border-black placeholder-gray-400 pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-100 transition-colors duration-200"
+                    onChange={(e) => {
+                      console.log("called");
+
+                      handleSearch(e);
+                    }}
+                    value={search}
                   />
                 </div>
 
