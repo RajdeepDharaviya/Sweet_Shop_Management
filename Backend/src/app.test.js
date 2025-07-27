@@ -126,6 +126,8 @@ describe("POST /api/sweet", () => {
       name: "testSweet",
       price: 100,
       description: "testDescription",
+      image: "testImage.jpg",
+      stock: 50,
     };
 
     // Act
