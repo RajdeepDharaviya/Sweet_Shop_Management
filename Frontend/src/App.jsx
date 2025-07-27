@@ -6,6 +6,7 @@ import appStore from "./utils/appStore";
 import { Provider } from "react-redux";
 import Registration from "./components/Registration";
 import DashBoard from "./components/DashBoard";
+import AddSweet from "./components/AddSweet";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
               <Route path="/" element={<DashBoard />}></Route>
               <Route path="/login" element={<Login />}></Route>
               <Route path="/registration" element={<Registration />}></Route>
+              <Route path="/add/sweet" element={<AddSweet />}></Route>
             </Route>
           </Routes>
         </BrowserRouter>
