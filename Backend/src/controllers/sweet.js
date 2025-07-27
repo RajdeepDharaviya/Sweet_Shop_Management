@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const { sweetModel } = require("../models/sweet");
 const { userRoleModel } = require("../models/userRole");
 
@@ -106,9 +107,37 @@ const updateSweetController = async (req, res) => {
   }
 };
 
+const deleteSweetController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(404).json({ message: "Sweet not found" });
+    }
+    // ✅ Validate ID format first
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: "Invalid Sweet ID" });
+    }
+
+    const deletedSweet = await sweetModel.findOneAndDelete({
+      _id: id,
+    });
+
+    if (!deletedSweet) {
+      return res.status(404).json({ message: "Sweet not found" });
+    }
+
+    res.status(200).json({ message: "Sweet deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting sweet:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   addSweetController,
   getAllSweetsController,
   getSweetBySearchController,
   updateSweetController,
+  deleteSweetController,
 };

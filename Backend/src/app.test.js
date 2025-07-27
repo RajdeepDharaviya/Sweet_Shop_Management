@@ -394,10 +394,11 @@ describe("DELETE /api/sweets/:id", () => {
 
   it("should respond with 404 if sweet not found", async () => {
     // Act
+
     const response = await request(app).delete("/api/sweets/invalidId");
 
     // Assertion
     expect(response.status).toBe(404);
-    expect(response.body.message).toBe("Sweet not found");
+    expect(response.body.message).toBe("Invalid Sweet ID");
   });
 });
