@@ -1,4 +1,3 @@
-const request = require("supertest");
 const { sweetModel } = require("../models/sweet");
 const { addSweetController } = require("./sweet");
 
@@ -33,8 +32,7 @@ describe("Sweet Model Tests", () => {
     };
 
     addSweetController(req, res);
-
-    expect(sweetModel.create).toHaveBeenCalledWith(req.body);
     expect(sweetModel.create).toHaveBeenCalledTimes(1);
+    expect(sweetModel.create).toHaveBeenCalledWith(sweetData);
   });
 });

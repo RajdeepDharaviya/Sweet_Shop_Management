@@ -18,9 +18,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  roleId: {
-    type: Number,
+  role: {
+    type: String,
     required: true,
+    default: "user", // Default role ID for regular users
+    // ref="userRole", // Assuming you have a userRole model
   },
 });
 

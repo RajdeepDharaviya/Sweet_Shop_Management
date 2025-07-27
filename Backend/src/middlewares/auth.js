@@ -3,10 +3,10 @@ const { JWT_SECRET } = require("../constants");
 const { userModel } = require("../models/user");
 
 const signJwtToken = (user) => {
-  const { firstName, lastName, email, _id, roleId } = user;
+  const { firstName, lastName, email, _id, role } = user;
 
   const token = jwt.sign(
-    { firstName, lastName, email, _id, roleId },
+    { firstName, lastName, email, _id, role },
     JWT_SECRET,
     { expiresIn: "1h" } // token will expire in one 1 hour
   );

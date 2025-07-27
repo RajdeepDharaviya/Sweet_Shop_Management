@@ -14,7 +14,7 @@ describe("Register User Controller ", () => {
         lastName: "dharaviya",
         email: "raj@gmail.com",
         password: "13245678",
-        roleId: 0,
+        role: "0",
       },
     };
 

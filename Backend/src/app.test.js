@@ -2,12 +2,32 @@ const request = require("supertest");
 const app = require("./app");
 const { userModel } = require("./models/user");
 const memoryDB = require("./test-utils/inmemorydb");
+const { userRoleModel } = require("./models/userRole");
 
 // Increase Jest timeout to avoid timeout errors during DB setup
 jest.setTimeout(20000);
 
+// This function will create userRole model in memory db before running any test
+const createUserRoles = async () => {
+  // creating a user role models for testing
+  const roles = [{ role: "admin" }, { role: "user" }, { role: "employee" }];
+  roles.forEach(async (role) => {
+    await userRoleModel.create(role);
+  });
+};
+
 // This function will first establish a connection to in memory db before runnig anything
-beforeAll(async () => memoryDB.connectMemoryDB());
+beforeAll(async () =>
+  memoryDB
+    .connectMemoryDB()
+    .then(() => createUserRoles())
+    .catch((err) => {
+      console.error("Error connecting to in-memory database:", err.message);
+    })
+);
+
+// beforeAll(
+// });
 
 // This function will clear in Memory database before running any test
 // NOTE : for login api testing comment this function
@@ -24,7 +44,7 @@ describe("POST /api/auth/register ", () => {
       lastName: "testLastName",
       email: "test@gmail.com",
       password: "testpassword",
-      roleId: 0,
+      role: "0",
     };
 
     // Act
@@ -78,7 +98,7 @@ describe("POST /api/auth/login", () => {
       lastName: "testLastName",
       email: "test@gmail.com",
       password: "testpassword",
-      roleId: 1, // Assuming 1 is a valid roleId for a admin
+      role: "admin", // Assuming 1 is a valid role for a admin
     });
     await user.save();
     const response = await request(app)
@@ -128,6 +148,9 @@ describe("POST /api/auth/login", () => {
   });
 });
 
+// spy a user role model
+const userRoleSpy = jest.spyOn(userRoleModel, "findOne");
+
 describe("POST /api/sweet", () => {
   it("should respond with 201 and create new sweet", async () => {
     // Arrange
@@ -145,22 +168,26 @@ describe("POST /api/sweet", () => {
       lastName: "testLastName",
       email: "test@gmail.com",
       password: "testpassword",
-      roleId: 1, // Assuming 1 is a valid roleId for a admin
+      role: "admin", // Assuming 1 is a valid role for a admin
     });
     await user.save();
 
     // Act
 
-    //getting the user roleId
-    const userRoleId = user.roleId;
+    //getting the user role
+    const role = user.role;
 
     const response = await request(app).post("/api/sweet").send(newSweet);
 
     // Assertion
-    expect(userRoleId).toBe(1); // Assuming 1 is the roleId for admin
+
+    // userRoleSpy.mockReturnValueOnce(); // Mocking the user role to be admin
+
+    expect(role).toBe("admin"); // Assuming is the role for admin
     expect(response.status).toBe(201);
     expect(response.body.name).toBe(newSweet.name);
     expect(response.body.price).toBe(newSweet.price);
+    ``;
     expect(response.body._id).toBeDefined();
   });
 
