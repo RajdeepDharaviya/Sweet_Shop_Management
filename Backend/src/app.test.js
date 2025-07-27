@@ -353,3 +353,51 @@ describe("PUT /api/sweets/:id", () => {
     expect(response.body.message).toBe("Sweet not found");
   });
 });
+
+describe("DELETE /api/sweets/:id", () => {
+  it("should respond with 200 and delete the sweet", async () => {
+    // Arrange
+    const sweet = new sweetModel({
+      name: "testSweet",
+      price: 100,
+      description: "testDescription",
+      image: "testImage.jpg",
+      category: "testCategory",
+      stock: 50,
+    });
+    await sweet.save();
+
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      category: "testCategory",
+      role: "admin", // Assuming 1 is a valid role for a admin
+    });
+    await user.save();
+
+    const role = user.role;
+
+    // Act
+    const response = await request(app).delete(`/api/sweets/${sweet._id}`);
+
+    // Assertion
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Sweet deleted successfully");
+
+    // Check if the sweet is actually deleted
+    const deletedSweet = await sweetModel.findById(sweet._id);
+    expect(role).toBe("admin"); // Assuming is the role for admin
+    expect(deletedSweet).toBeNull();
+  });
+
+  it("should respond with 404 if sweet not found", async () => {
+    // Act
+    const response = await request(app).delete("/api/sweets/invalidId");
+
+    // Assertion
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Sweet not found");
+  });
+});
