@@ -346,7 +346,9 @@ describe("PUT /api/sweets/:id", () => {
 
   it("should respond with 404 if sweet not found", async () => {
     // Act
-    const response = await request(app).put("/api/sweets/invalidId").send({});
+    const response = await request(app)
+      .put("/api/sweets/000000000000000000000000")
+      .send({});
 
     // Assertion
     expect(response.status).toBe(404);
@@ -395,7 +397,9 @@ describe("DELETE /api/sweets/:id", () => {
   it("should respond with 404 if sweet not found", async () => {
     // Act
 
-    const response = await request(app).delete("/api/sweets/invalidId");
+    const response = await request(app).delete(
+      "/api/sweets/000000000000000000000000"
+    );
 
     // Assertion
     expect(response.status).toBe(404);
@@ -449,8 +453,58 @@ describe("POST /api/sweets/:id/purchase", () => {
   it("should respond with 404 if sweet not purchase", async () => {
     // Act
     const response = await request(app)
-      .post("/api/sweets/invalidId/purchase")
+      .post("/api/sweets/000000000000000000000000/purchase")
       .send({ quantity: 1 });
+
+    // Assertion
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Sweet not found");
+  });
+});
+
+describe("POST /api/sweets/:id/restock", () => {
+  it("should respond with 200 and restock the sweet", async () => {
+    // Arrange
+    const sweet = new sweetModel({
+      name: "testSweet",
+      price: 100,
+      description: "testDescription",
+      image: "testImage.jpg",
+      category: "testCategory",
+      stock: 50,
+    });
+    await sweet.save();
+
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      role: "admin", // Assuming 1 is a valid role for a admin
+    });
+    await user.save();
+    const role = user.role;
+
+    // Act
+    const response = await request(app)
+      .post(`/api/sweets/${sweet._id}/restock`)
+      .send({ quantity: 20 });
+
+    // Assertion
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe(
+      `Sweet with ID ${sweet._id} restocked successfully.`
+    );
+    expect(role).toBe("admin"); // Assuming is the role for admin
+    expect(response.body.sweet.name).toBe(sweet.name);
+    expect(response.body.sweet.stock).toBe(sweet.stock + 20);
+  });
+
+  it("should respond with 404 if sweet not found for restock", async () => {
+    // Act
+    const response = await request(app)
+      .post("/api/sweets/000000000000000000000000/restock")
+      .send({ quantity: 10 });
 
     // Assertion
     expect(response.status).toBe(404);
