@@ -19,7 +19,7 @@ const purchaseSweetController = async (req, res) => {
 
     const sale = await salesModel.create({
       sweetId,
-      customerId: new ObjectId("000000000000000000000000"), // Replace with actual user ID from request context
+      customerId: req.user._id, // Replace with actual user ID from request context
       quantity: req.body.quantity,
       totalPrice: 200,
     });

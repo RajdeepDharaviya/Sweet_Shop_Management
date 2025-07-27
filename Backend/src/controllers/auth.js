@@ -42,7 +42,7 @@ const loginUserController = async (req, res) => {
       .findOne({
         $and: [{ email: email }, { password: password }],
       })
-      .populate("firstName lastName email role _id");
+      .select("firstName lastName email role _id");
 
     if (!user) {
       return res.status(401).json({

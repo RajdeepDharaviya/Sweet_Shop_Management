@@ -35,6 +35,7 @@ const verifyToken = async (req, res, next) => {
     });
   }
 
+  // @ts-ignore
   const isValidUser = await userModel.findById(userData._id);
 
   if (!isValidUser) {
@@ -44,6 +45,7 @@ const verifyToken = async (req, res, next) => {
   }
 
   req.user = userData;
+  next();
 };
 
-module.exports = { signJwtToken };
+module.exports = { signJwtToken, verifyToken };
