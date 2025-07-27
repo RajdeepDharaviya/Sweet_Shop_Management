@@ -5,6 +5,7 @@ import Body from "./pages/Body";
 import appStore from "./utils/appStore";
 import { Provider } from "react-redux";
 import Registration from "./components/Registration";
+import DashBoard from "./components/DashBoard";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Body />}>
+              <Route path="/" element={<DashBoard />}></Route>
               <Route path="/login" element={<Login />}></Route>
               <Route path="/registration" element={<Registration />}></Route>
             </Route>
