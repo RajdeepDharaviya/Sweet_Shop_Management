@@ -293,3 +293,59 @@ describe("GET /api/sweets/search", () => {
     expect(response.body.message).toBe("No sweets found");
   });
 });
+
+describe("PUT /api/sweets/:id", () => {
+  it("should respond with 200 and update the sweet", async () => {
+    // Arrange
+    const sweet = new sweetModel({
+      name: "testSweet",
+      price: 100,
+      description: "testDescription",
+      image: "testImage.jpg",
+      category: "testCategory",
+      stock: 50,
+    });
+    await sweet.save();
+
+    const updatedSweet = {
+      name: "updatedSweet",
+      price: 150,
+      description: "updatedDescription",
+      image: "updatedImage.jpg",
+      category: "updatedCategory",
+      stock: 100,
+    };
+    // adding a user to the database to avoid authentication issues
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      category: "testCategory",
+      role: "admin", // Assuming 1 is a valid role for a admin
+    });
+    await user.save();
+
+    const role = user.role;
+
+    // Act
+    const response = await request(app)
+      .put(`/api/sweets/${sweet._id}`)
+      .send(updatedSweet);
+
+    // Assertion
+    expect(role).toBe("admin"); // Assuming is the role for admin
+    expect(response.status).toBe(200);
+    expect(response.body.name).toBe(updatedSweet.name);
+    expect(response.body.price).toBe(updatedSweet.price);
+  });
+
+  it("should respond with 404 if sweet not found", async () => {
+    // Act
+    const response = await request(app).put("/api/sweets/invalidId").send({});
+
+    // Assertion
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Sweet not found");
+  });
+});
