@@ -6,6 +6,6 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
-app.use("/api/sweet", sweetRouter);
+app.use("/api", sweetRouter);
 
 module.exports = app;

@@ -17,7 +17,6 @@ const addSweetController = async (req, res) => {
       image,
       stock,
     });
-    console.log("created sweet", sweetData);
 
     // Logic to add sweet to the database
     res.status(201).json(sweetData);
@@ -27,6 +26,20 @@ const addSweetController = async (req, res) => {
   }
 };
 
+const getAllSweetsController = async (req, res) => {
+  try {
+    const sweets = await sweetModel.find({});
+    if (!sweets || sweets.length === 0) {
+      return res.status(404).json({ message: "No sweets found" });
+    }
+    res.status(200).json(sweets);
+  } catch (error) {
+    console.error("Error fetching sweets:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   addSweetController,
+  getAllSweetsController,
 };
