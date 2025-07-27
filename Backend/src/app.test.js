@@ -255,7 +255,7 @@ describe("GET /api/sweets/search", () => {
         price: 100,
         description: "testDescription1",
         image: "testImage1.jpg",
-        category: "testCategory",
+        category: "chocolate",
         stock: 50,
       },
       {
@@ -274,7 +274,7 @@ describe("GET /api/sweets/search", () => {
     // Act
     const response = await request(app)
       .get("/api/sweets/search")
-      .query({ term: "testSweet1" });
+      .query({ term: 150 });
 
     // Assertion
     expect(response.status).toBe(200);
@@ -286,7 +286,7 @@ describe("GET /api/sweets/search", () => {
     // Act
     const response = await request(app)
       .get("/api/sweets/search")
-      .query({ term: "nonExistentSweet" });
+      .query({ term: "roti" });
 
     // Assertion
     expect(response.status).toBe(404);
