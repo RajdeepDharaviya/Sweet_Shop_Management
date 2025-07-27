@@ -21,7 +21,7 @@ const purchaseSweetController = async (req, res) => {
       sweetId,
       customerId: new ObjectId("000000000000000000000000"), // Replace with actual user ID from request context
       quantity: req.body.quantity,
-      totalPrice: req.body.totalPrice,
+      totalPrice: 200,
     });
 
     if (!sale) {

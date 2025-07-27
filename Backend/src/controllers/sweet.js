@@ -134,10 +134,49 @@ const deleteSweetController = async (req, res) => {
   }
 };
 
+const restockSweetController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+
+    if (!id) {
+      return res.status(404).json({ message: "Sweet not found" });
+    }
+    if (!quantity || quantity <= 0) {
+      return res.status(400).json({ message: "Invalid quantity" });
+    }
+
+    // ✅ Validate ID format first
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ message: "Invalid Sweet ID" });
+    }
+    // Find the sweet and update its stock
+    // Use $inc to increase the stock by the specified quantity
+    const updatedSweet = await sweetModel.findByIdAndUpdate(
+      id,
+      { $inc: { stock: quantity } },
+      { new: true }
+    );
+
+    if (!updatedSweet) {
+      return res.status(404).json({ message: "Sweet not found" });
+    }
+
+    res.status(200).json({
+      message: `Sweet with ID ${id} restocked successfully.`,
+      sweet: updatedSweet,
+    });
+  } catch (error) {
+    console.error("Error restocking sweet:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   addSweetController,
   getAllSweetsController,
   getSweetBySearchController,
   updateSweetController,
   deleteSweetController,
+  restockSweetController,
 };

@@ -329,10 +329,6 @@ describe("PUT /api/sweets/:id", () => {
     const role = user.role;
 
     // Act
-
-    //getting sweet by id
-    const isSweetExist = await sweetModel.findOne({ name: sweet.name });
-
     const response = await request(app)
       .put(`/api/sweets/${sweet._id}`)
       .send(updatedSweet);
@@ -403,7 +399,7 @@ describe("DELETE /api/sweets/:id", () => {
 
     // Assertion
     expect(response.status).toBe(404);
-    expect(response.body.message).toBe("Invalid Sweet ID");
+    expect(response.body.message).toBe("Sweet not found");
   });
 });
 
@@ -462,7 +458,7 @@ describe("POST /api/sweets/:id/purchase", () => {
   });
 });
 
-describe("POST /api/sweets/:id/restock", () => {
+describe("PUT /api/sweets/:id/restock", () => {
   it("should respond with 200 and restock the sweet", async () => {
     // Arrange
     const sweet = new sweetModel({
@@ -487,7 +483,7 @@ describe("POST /api/sweets/:id/restock", () => {
 
     // Act
     const response = await request(app)
-      .post(`/api/sweets/${sweet._id}/restock`)
+      .put(`/api/sweets/${sweet._id}/restock`)
       .send({ quantity: 20 });
 
     // Assertion
@@ -503,7 +499,7 @@ describe("POST /api/sweets/:id/restock", () => {
   it("should respond with 404 if sweet not found for restock", async () => {
     // Act
     const response = await request(app)
-      .post("/api/sweets/000000000000000000000000/restock")
+      .put("/api/sweets/000000000000000000000000/restock")
       .send({ quantity: 10 });
 
     // Assertion

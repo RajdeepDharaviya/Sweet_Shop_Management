@@ -5,6 +5,7 @@ const {
   getSweetBySearchController,
   updateSweetController,
   deleteSweetController,
+  restockSweetController,
 } = require("../controllers/sweet");
 const sweetRouter = express.Router();
 
@@ -13,5 +14,6 @@ sweetRouter.get("/sweets", getAllSweetsController);
 sweetRouter.get("/sweets/search", getSweetBySearchController);
 sweetRouter.put("/sweets/:id", updateSweetController);
 sweetRouter.delete("/sweets/:id", deleteSweetController);
+sweetRouter.put("/sweets/:id/restock", restockSweetController);
 
 module.exports = { sweetRouter };
