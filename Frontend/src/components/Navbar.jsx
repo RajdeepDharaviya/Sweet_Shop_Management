@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../constant";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { addSweet, removeSweet } from "../utils/sweetSlice";
 export default function Navbar() {
   const user = useSelector((store) => store.user);
   const [search, setSearch] = useState("");
+  // const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -30,8 +31,16 @@ export default function Navbar() {
     }
   };
 
+  // useEffect(() => {
+  //   if (!user) {
+  //     // navigate("/login");
+  //     return;
+  //   }
+  // });
+
   useEffect(() => {
     console.log("called");
+
     if (search === "") {
       return;
     }
@@ -57,6 +66,10 @@ export default function Navbar() {
       clearTimeout(time);
     };
   }, [search]);
+
+  if (!user) {
+    return <div></div>;
+  }
 
   return (
     <nav className=" text-black shadow-lg">
@@ -87,6 +100,16 @@ export default function Navbar() {
                   Login
                 </Link>
               )}
+              {user?.role === "admin" && (
+                <Link
+                  to={"/add/sweet"}
+                  href="#"
+                  className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200"
+                >
+                  Add Sweet
+                </Link>
+              )}
+
               <a
                 href="#"
                 className="text-black text-lg hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2  font-medium duration-200"
@@ -186,13 +209,25 @@ export default function Navbar() {
                 >
                   Filter
                 </a>
-                <Link
-                  to={"/login"}
-                  href="#"
-                  className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200"
-                >
-                  Login
-                </Link>
+                {!user && (
+                  <Link
+                    to={"/login"}
+                    href="#"
+                    className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200"
+                  >
+                    Login
+                  </Link>
+                )}
+
+                {user?.role === "admin" && (
+                  <Link
+                    to={"/add/sweet"}
+                    href="#"
+                    className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200"
+                  >
+                    Add Sweet
+                  </Link>
+                )}
                 <a
                   href="#"
                   className="block px-3 py-2 font-medium text-black hover:text-white hover:bg-slate-700 rounded-lg transition-colors duration-200"

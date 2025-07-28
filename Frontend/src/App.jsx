@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import Registration from "./components/Registration";
 import DashBoard from "./components/DashBoard";
 import AddSweet from "./components/AddSweet";
+import UpdateSweet from "./components/UpdateSweet";
 
 function App() {
   return (
@@ -19,6 +20,10 @@ function App() {
               <Route path="/login" element={<Login />}></Route>
               <Route path="/registration" element={<Registration />}></Route>
               <Route path="/add/sweet" element={<AddSweet />}></Route>
+              <Route
+                path="/update/sweets/:sweetId/:sweetName"
+                element={<UpdateSweet />}
+              ></Route>
             </Route>
           </Routes>
         </BrowserRouter>

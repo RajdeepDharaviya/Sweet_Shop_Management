@@ -1,7 +1,12 @@
 import axios from "axios";
 import { BASE_URL } from "../constant";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const SweetCard = ({ id, name, description, stock, price, image }) => {
+  const user = useSelector((store) => store.user);
+  // const dispatch = useDispatch();
+
   const handlePurchase = async (sweetId) => {
     try {
       const res = await axios.post(
@@ -20,6 +25,10 @@ const SweetCard = ({ id, name, description, stock, price, image }) => {
       console.error("Error during purchase:", error);
     }
   };
+
+  if (!user) {
+    return <div></div>;
+  }
 
   return (
     <>
@@ -55,6 +64,14 @@ const SweetCard = ({ id, name, description, stock, price, image }) => {
                   Order Now
                 </button>
               </div>
+            )}
+            {user.role === "admin" && (
+              <Link
+                to={"/update/sweets/" + id + "/" + name}
+                className="btn  bg-green-600 hover:bg-green-500"
+              >
+                Update Sweet
+              </Link>
             )}
           </div>
         </div>
