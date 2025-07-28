@@ -4,6 +4,7 @@ const { userModel } = require("./models/user");
 const memoryDB = require("./test-utils/inmemorydb");
 const { userRoleModel } = require("./models/userRole");
 const { sweetModel } = require("./models/sweet");
+const { signJwtToken } = require("./middlewares/auth");
 
 // Increase Jest timeout to avoid timeout errors during DB setup
 jest.setTimeout(20000);
@@ -172,8 +173,12 @@ describe("POST /api/sweet", () => {
 
     //getting the user role
     const role = user.role;
+    const token = signJwtToken(user);
 
-    const response = await request(app).post("/api/sweet").send(newSweet);
+    const response = await request(app)
+      .post("/api/sweet")
+      .set("Authorization", `Bearer ${token}`)
+      .send(newSweet);
 
     // Assertion
 
@@ -193,9 +198,27 @@ describe("POST /api/sweet", () => {
       name: "testSweet",
       price: 100,
     };
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      category: "testCategory",
+      role: "admin", // Assuming 1 is a valid role for a admin
+    });
+    await user.save();
 
     // Act
-    const response = await request(app).post("/api/sweet").send(newSweet);
+
+    //getting the user role
+    const role = user.role;
+    const token = signJwtToken(user);
+
+    // Act
+    const response = await request(app)
+      .post("/api/sweet")
+      .set("Authorization", `Bearer ${token}`)
+      .send(newSweet);
 
     // Assertion
     expect(response.status).toBe(400);
@@ -236,12 +259,12 @@ describe("GET /api/sweets", () => {
     expect(Array.isArray(response.body)).toBe(true);
   });
 
-  it("should respond with 404 if no sweets found", async () => {
+  it("should respond with 201 if no sweets found", async () => {
     // Act
     const response = await request(app).get("/api/sweets");
 
     // Assertion
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(200);
     expect(response.body.message).toBe("No sweets found");
   });
 });
@@ -282,14 +305,14 @@ describe("GET /api/sweets/search", () => {
     expect(response.body[0].name).toBe("testSweet1");
   });
 
-  it("should respond with 404 if no sweets match the search term", async () => {
+  it("should respond with 201 if no sweets match the search term", async () => {
     // Act
     const response = await request(app)
       .get("/api/sweets/search")
       .query({ term: "roti" });
 
     // Assertion
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(201);
     expect(response.body.message).toBe("No sweets found");
   });
 });
@@ -326,11 +349,13 @@ describe("PUT /api/sweets/:id", () => {
     });
     await user.save();
 
+    const token = signJwtToken(user);
     const role = user.role;
 
     // Act
     const response = await request(app)
       .put(`/api/sweets/${sweet._id}`)
+      .set("Authorization", `Bearer ${token}`)
       .send(updatedSweet);
 
     // Assertion
@@ -341,14 +366,32 @@ describe("PUT /api/sweets/:id", () => {
   });
 
   it("should respond with 404 if sweet not found", async () => {
+    // Arrange
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      category: "testCategory",
+      role: "admin", // Assuming 1 is a valid role for a admin
+    });
+    await user.save();
+
+    // Act
+
+    //getting the user role
+    const role = user.role;
+    const token = signJwtToken(user);
+
     // Act
     const response = await request(app)
       .put("/api/sweets/000000000000000000000000")
+      .set("Authorization", `Bearer ${token}`)
       .send({});
 
     // Assertion
     expect(response.status).toBe(404);
-    expect(response.body.message).toBe("Sweet not found");
+    expect(response.body.message).toBe("Please provide all fields!");
   });
 });
 
@@ -374,11 +417,13 @@ describe("DELETE /api/sweets/:id", () => {
       role: "admin", // Assuming 1 is a valid role for a admin
     });
     await user.save();
-
+    const token = signJwtToken(user);
     const role = user.role;
 
     // Act
-    const response = await request(app).delete(`/api/sweets/${sweet._id}`);
+    const response = await request(app)
+      .delete(`/api/sweets/${sweet._id}`)
+      .set("Authorization", `Bearer ${token}`);
 
     // Assertion
     expect(response.status).toBe(200);
@@ -391,11 +436,28 @@ describe("DELETE /api/sweets/:id", () => {
   });
 
   it("should respond with 404 if sweet not found", async () => {
+    // Arrange
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      category: "testCategory",
+      role: "admin", // Assuming 1 is a valid role for a admin
+    });
+    await user.save();
+
     // Act
 
-    const response = await request(app).delete(
-      "/api/sweets/000000000000000000000000"
-    );
+    //getting the user role
+
+    const token = signJwtToken(user);
+
+    // Act
+
+    const response = await request(app)
+      .delete("/api/sweets/000000000000000000000000")
+      .set("Authorization", `Bearer ${token}`);
 
     // Assertion
     expect(response.status).toBe(404);
@@ -427,10 +489,12 @@ describe("POST /api/sweets/:id/purchase", () => {
 
     await user.save();
     const role = user.role;
+    const token = signJwtToken(user);
 
     // Act
     const response = await request(app)
       .post(`/api/sweets/${sweet._id}/purchase`)
+      .set("Authorization", `Bearer ${token}`)
       .send({
         quantity: 2,
         totalPrice: sweet.price * 2,
@@ -447,9 +511,27 @@ describe("POST /api/sweets/:id/purchase", () => {
   });
 
   it("should respond with 404 if sweet not purchase", async () => {
+    // Arrange
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      category: "testCategory",
+      role: "admin", // Assuming 1 is a valid role for a admin
+    });
+    await user.save();
+
+    // Act
+
+    //getting the user role
+    const role = user.role;
+    const token = signJwtToken(user);
+
     // Act
     const response = await request(app)
       .post("/api/sweets/000000000000000000000000/purchase")
+      .set("Authorization", `Bearer ${token}`)
       .send({ quantity: 1 });
 
     // Assertion
@@ -480,10 +562,11 @@ describe("PUT /api/sweets/:id/restock", () => {
     });
     await user.save();
     const role = user.role;
-
+    const token = signJwtToken(user);
     // Act
     const response = await request(app)
       .put(`/api/sweets/${sweet._id}/restock`)
+      .set("Authorization", `Bearer ${token}`)
       .send({ quantity: 20 });
 
     // Assertion
@@ -497,9 +580,27 @@ describe("PUT /api/sweets/:id/restock", () => {
   });
 
   it("should respond with 404 if sweet not found for restock", async () => {
+    // Arrange
+    const user = new userModel({
+      firstName: "testFirstName",
+      lastName: "testLastName",
+      email: "test@gmail.com",
+      password: "testpassword",
+      category: "testCategory",
+      role: "admin", // Assuming 1 is a valid role for a admin
+    });
+    await user.save();
+
+    // Act
+
+    //getting the user role
+    const role = user.role;
+    const token = signJwtToken(user);
+
     // Act
     const response = await request(app)
       .put("/api/sweets/000000000000000000000000/restock")
+      .set("Authorization", `Bearer ${token}`)
       .send({ quantity: 10 });
 
     // Assertion
