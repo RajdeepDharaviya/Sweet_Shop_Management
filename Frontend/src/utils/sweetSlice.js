@@ -15,7 +15,8 @@ const sweetSlice = createSlice({
       return [];
     },
     removeOneSweet: (state, action) => {
-      return state.filter((sweet) => sweet.id !== action.payload);
+      const newState = state.filter((sweet) => sweet._id !== action.payload);
+      return newState;
     },
   },
 });

@@ -1,11 +1,24 @@
 import axios from "axios";
 import { BASE_URL } from "../constant";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { removeOneSweet } from "../utils/sweetSlice";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
 
-const SweetCard = ({ id, name, description, stock, price, image }) => {
+const SweetCard = ({
+  id,
+  name,
+  description,
+  stock,
+  price,
+  image,
+  handleDeleteSweet,
+}) => {
   const user = useSelector((store) => store.user);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+
+  const [isDelete, setIsDelete] = useState(false);
 
   const handlePurchase = async (sweetId) => {
     try {
@@ -71,6 +84,16 @@ const SweetCard = ({ id, name, description, stock, price, image }) => {
                 className="btn  bg-green-600 hover:bg-green-500"
               >
                 Update Sweet
+              </Link>
+            )}
+            {user.role === "admin" && (
+              <Link
+                onClick={() => {
+                  handleDeleteSweet(id);
+                }}
+                className="btn  bg-red-600 hover:bg-red-500"
+              >
+                Delete
               </Link>
             )}
           </div>

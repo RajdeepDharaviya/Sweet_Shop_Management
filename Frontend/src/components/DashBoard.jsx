@@ -3,7 +3,7 @@ import SweetCard from "./SweetCard";
 import axios from "axios";
 import { BASE_URL } from "../constant";
 import { useDispatch, useSelector } from "react-redux";
-import { addSweet } from "../utils/sweetSlice";
+import { addSweet, removeOneSweet } from "../utils/sweetSlice";
 
 const DashBoard = () => {
   const dispatch = useDispatch(); // Assuming you are using Redux for state management
@@ -25,6 +25,20 @@ const DashBoard = () => {
       dispatch(addSweet(res.data)); // Assuming you have an action to add sweets
     } catch (error) {
       console.error("Error fetching sweets:", error);
+    }
+  };
+
+  const handleDeleteSweet = async (sweetId) => {
+    try {
+      const res = await axios.delete(BASE_URL + `api/sweets/${sweetId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      dispatch(removeOneSweet(sweetId));
+      alert("Sweet deleted successfully!");
+    } catch (error) {
+      console.error("Error during purchase:", error);
     }
   };
 
@@ -68,6 +82,7 @@ const DashBoard = () => {
             image={sweet.image}
             stock={sweet.stock}
             price={sweet.price}
+            handleDeleteSweet={handleDeleteSweet}
           />
         );
       })}

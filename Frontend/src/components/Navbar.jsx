@@ -8,7 +8,7 @@ import { addSweet, removeSweet } from "../utils/sweetSlice";
 export default function Navbar() {
   const user = useSelector((store) => store.user);
   const [search, setSearch] = useState("");
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -31,12 +31,12 @@ export default function Navbar() {
     }
   };
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     // navigate("/login");
-  //     return;
-  //   }
-  // });
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+  }, []);
 
   useEffect(() => {
     console.log("called");
