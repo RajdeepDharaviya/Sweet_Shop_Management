@@ -1,10 +1,7 @@
 import axios from "axios";
 import { BASE_URL } from "../constant";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { removeOneSweet } from "../utils/sweetSlice";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const SweetCard = ({
   id,
@@ -16,9 +13,6 @@ const SweetCard = ({
   handleDeleteSweet,
 }) => {
   const user = useSelector((store) => store.user);
-  const dispatch = useDispatch();
-
-  const [isDelete, setIsDelete] = useState(false);
 
   const handlePurchase = async (sweetId) => {
     try {

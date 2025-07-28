@@ -6,8 +6,8 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 
 const Login = () => {
-  const [email, setEmail] = useState("raj@gmail.com");
-  const [password, setPassword] = useState("raj@123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const navigate = useNavigate(); // Redirect to home page

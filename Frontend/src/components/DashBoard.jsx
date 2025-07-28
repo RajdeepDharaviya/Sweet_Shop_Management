@@ -23,7 +23,8 @@ const DashBoard = () => {
       console.log("Sweets fetched successfully:", res.data);
       // Dispatch action to add sweets to Redux store
       if (res.data?.length > 0) {
-        dispatch(addSweet(res.data)); // Assuming you have an action to add sweets
+        dispatch(addSweet(res.data));
+        return; // Assuming you have an action to add sweets
       }
       dispatch(addSweet([]));
     } catch (error) {
@@ -62,8 +63,6 @@ const DashBoard = () => {
       </div>
     );
   }
-
-  console.log(sweetsSelector);
 
   if (sweetsSelector.length === 0) {
     return (

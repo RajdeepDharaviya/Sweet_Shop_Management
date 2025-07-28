@@ -3,16 +3,12 @@ import { useState } from "react";
 import { BASE_URL } from "../constant";
 
 const AddSweet = () => {
-  const [name, setName] = useState("jalebi");
-  const [description, setDescription] = useState(
-    "a very delicious with , sweet test"
-  );
-  const [image, setImage] = useState(
-    "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT3VmHbbwJfDhyBqHdRXlh--Rn9r8U1ECMu8IJhDIrGsGO_gtmEVlebHU6K8KeSXvR7kiozj5lAbol5usQ2G6KO0C_0tKL4ALuYxauI-j4"
-  );
-  const [category, setCategory] = useState("afghani");
-  const [price, setPrice] = useState(250);
-  const [stock, setStock] = useState(20);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState(0);
+  const [stock, setStock] = useState(0);
   const [error, setError] = useState("");
 
   // Function to handle Registration
