@@ -2,8 +2,6 @@ const { signJwtToken } = require("../middlewares/auth");
 const { userModel } = require("../models/user");
 
 const registerUserController = async (req, res) => {
-  console.log("Registering user with data:", req.body);
-
   try {
     const { firstName, lastName, email, password, role } = req.body;
 
@@ -23,7 +21,6 @@ const registerUserController = async (req, res) => {
       password,
       role,
     });
-    console.log("New user created:", newUser);
 
     if (!newUser) {
       return res.status(500).json({ message: "User registration failed" });

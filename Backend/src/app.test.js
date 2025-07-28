@@ -1,5 +1,3 @@
-@ts-ignore
-
 const request = require("supertest");
 const app = require("./app");
 const { userModel } = require("./models/user");

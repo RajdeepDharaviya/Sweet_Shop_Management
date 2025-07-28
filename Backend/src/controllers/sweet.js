@@ -19,10 +19,16 @@ const addSweetController = async (req, res) => {
       category,
       stock,
     });
+    // console.log(sweetData);
+    // if (!sweetData) {
+    //   return res.status(400).json({ message: "Sweet not added" });
+    // }
 
     // Logic to add sweet to the database
     res.status(201).json(sweetData);
   } catch (error) {
+    console.log("catch is called");
+
     console.error("Error adding sweet:", error);
     res.status(500).json({ message: "Internal server error" });
   }
@@ -32,7 +38,7 @@ const getAllSweetsController = async (req, res) => {
   try {
     const sweets = await sweetModel.find({});
     if (!sweets || sweets.length === 0) {
-      return res.status(404).json({ message: "No sweets found" });
+      return res.status(200).json({ message: "No sweets found" });
     }
     res.status(200).json(sweets);
   } catch (error) {
@@ -60,7 +66,7 @@ const getSweetBySearchController = async (req, res) => {
       ];
       const sweets = await sweetModel.find({ $or: searchConditions });
       if (!sweets || sweets.length === 0) {
-        return res.status(404).json({ message: "No sweets found" });
+        return res.status(201).json({ message: "No sweets found" });
       }
       return res.status(200).json(sweets);
     }
@@ -88,8 +94,9 @@ const updateSweetController = async (req, res) => {
       return res.status(404).json({ message: "Sweet not found" });
     }
     if (!name || !price || !description || !image || !stock || !category) {
-      return res.status(404).json({ message: "Sweet not found" });
+      return res.status(404).json({ message: "Please provide all fields!" });
     }
+
     const updatedSweet = await sweetModel.findByIdAndUpdate(
       id,
       { name, price, description, image, stock, category },

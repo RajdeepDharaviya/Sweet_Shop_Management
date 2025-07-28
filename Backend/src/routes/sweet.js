@@ -10,10 +10,10 @@ const {
 const { verifyToken } = require("../middlewares/auth");
 const sweetRouter = express.Router();
 
-sweetRouter.use(verifyToken);
-sweetRouter.post("/sweet", addSweetController);
 sweetRouter.get("/sweets", getAllSweetsController);
 sweetRouter.get("/sweets/search", getSweetBySearchController);
+sweetRouter.use(verifyToken);
+sweetRouter.post("/sweet", addSweetController);
 sweetRouter.put("/sweets/:id", updateSweetController);
 sweetRouter.delete("/sweets/:id", deleteSweetController);
 sweetRouter.put("/sweets/:id/restock", restockSweetController);

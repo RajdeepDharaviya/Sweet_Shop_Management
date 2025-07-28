@@ -22,7 +22,6 @@ const verifyToken = async (req, res, next) => {
       message: "No headers found!",
     });
   }
-  console.log("Headers:", headers || "No headers found");
 
   const authorization = headers.authorization;
 
