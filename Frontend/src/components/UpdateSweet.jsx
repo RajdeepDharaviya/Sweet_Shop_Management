@@ -139,6 +139,7 @@ const UpdateSweet = () => {
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
+        <label className="label text-black">Restock Sweet with details</label>
         <label className="label text-black">stock</label>
         <input
           type="number"

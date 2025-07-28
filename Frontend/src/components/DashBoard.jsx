@@ -22,7 +22,10 @@ const DashBoard = () => {
       });
       console.log("Sweets fetched successfully:", res.data);
       // Dispatch action to add sweets to Redux store
-      dispatch(addSweet(res.data)); // Assuming you have an action to add sweets
+      if (res.data?.length > 0) {
+        dispatch(addSweet(res.data)); // Assuming you have an action to add sweets
+      }
+      dispatch(addSweet([]));
     } catch (error) {
       console.error("Error fetching sweets:", error);
     }

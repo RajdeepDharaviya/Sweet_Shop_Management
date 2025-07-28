@@ -49,7 +49,10 @@ const Login = () => {
     } catch (error) {
       // Handle error
       console.error("An error occurred during login:", error);
-      setError("Login failed. Please check your credentials.");
+      setError(
+        error?.response?.data?.message ||
+          "Login failed. Please check your credentials."
+      );
     }
   };
 

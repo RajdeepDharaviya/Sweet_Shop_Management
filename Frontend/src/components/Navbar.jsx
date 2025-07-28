@@ -85,12 +85,21 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              <a
-                href="#"
-                className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200"
-              >
-                Filter
-              </a>
+              {/* {
+                <details className="dropdown">
+                  <summary className="text-black hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2 text-lg font-medium  duration-200">
+                    Filter
+                  </summary>
+                  <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <li>
+                      <a>Item 1</a>
+                    </li>
+                    <li>
+                      <a>Item 2</a>
+                    </li>
+                  </ul>
+                </details>
+              } */}
               {!user && (
                 <Link
                   to={"/login"}
@@ -111,10 +120,14 @@ export default function Navbar() {
               )}
 
               <a
+                onClick={() => {
+                  window.location.reload();
+                  localStorage.removeItem("token");
+                }}
                 href="#"
                 className="text-black text-lg hover:text-slate-700 transform transition-all hover:scale-[1.10] px-3 py-2  font-medium duration-200"
               >
-                About us
+                Logout
               </a>
             </div>
           </div>
@@ -150,13 +163,7 @@ export default function Navbar() {
             </div>
 
             {/* Profile */}
-            <div className="flex items-center">
-              <img
-                className="h-8 w-8 rounded-full object-cover"
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="Profile"
-              />
-            </div>
+            <div className="flex items-center"></div>
           </div>
 
           {/* Mobile menu button - CSS only toggle */}
@@ -203,12 +210,14 @@ export default function Navbar() {
             {/* Mobile menu - hidden by default, shown when checkbox is checked */}
             <div className="hidden peer-checked:block absolute top-16 left-0 w-full bg-white border-t border-slate-700 z-50">
               <div className="px-6 pt-2 pb-3 space-y-1">
-                <a
-                  href="#"
-                  className="block px-3 py-2 text-base font-medium text-black hover:text-white hover:bg-slate-700 rounded-lg transition-colors duration-200"
-                >
-                  Filter
-                </a>
+                {/* {
+                  <a
+                    href="#"
+                    className="block px-3 py-2 text-base font-medium text-black hover:text-white hover:bg-slate-700 rounded-lg transition-colors duration-200"
+                  >
+                    Filter
+                  </a>
+                } */}
                 {!user && (
                   <Link
                     to={"/login"}
@@ -229,10 +238,14 @@ export default function Navbar() {
                   </Link>
                 )}
                 <a
+                  onClick={() => {
+                    window.location.reload();
+                    localStorage.removeItem("token");
+                  }}
                   href="#"
                   className="block px-3 py-2 font-medium text-black hover:text-white hover:bg-slate-700 rounded-lg transition-colors duration-200"
                 >
-                  About us
+                  Logout
                 </a>
               </div>
 
